@@ -6,24 +6,32 @@
     <title>Maftuna Store</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;1,600&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
-        :root { --brand: #8B1A6B; --brand-light: #b5218c; --bg: #f8f9fa; --text: #333; --gray: #8e8e93; --red: #ff3b30; }
+        :root { 
+            --brand: #D4AF37; /* Tillarang / Gold aksent */
+            --brand-light: #E5C77A; 
+            --bg: #FDFBF7; /* Och sut rangi fon */
+            --text: #2C2C2C; /* To'q kulrang matn */
+            --gray: #8e8e93; 
+            --red: #ff3b30; 
+        }
         * { box-sizing: border-box; outline: none; -webkit-tap-highlight-color: transparent; }
-        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; margin: 0; background: var(--bg); color: var(--text); overflow: hidden; height: 100vh; display: flex; flex-direction: column; }
+        body { font-family: 'Inter', sans-serif; margin: 0; background: var(--bg); color: var(--text); overflow: hidden; height: 100vh; display: flex; flex-direction: column; }
 
         /* HEADER */
-        .header { background: white; padding: 12px 15px; border-bottom: 1px solid #eee; display: flex; align-items: center; gap: 10px; flex-shrink: 0; z-index: 10; }
-        .brand { font-size: 22px; font-weight: 900; line-height: 1; letter-spacing: -0.5px; }
-        .brand .big { color: var(--brand); }
-        .brand .amp { color: #555; }
+        .header { background: white; padding: 12px 15px; border-bottom: 1px solid #eee; display: flex; align-items: center; gap: 10px; flex-shrink: 0; z-index: 10; box-shadow: 0 2px 10px rgba(0,0,0,0.02); }
+        .brand { font-size: 24px; font-weight: 900; line-height: 1; letter-spacing: -0.5px; font-family: 'Playfair Display', serif; }
+        .brand .big { color: var(--text); }
+        .brand .amp { color: var(--brand); font-style: italic; }
         .search-box { background: #efeff4; border-radius: 10px; display: flex; align-items: center; padding: 8px 12px; flex: 1; }
-        .search-box input { border: none; background: transparent; width: 100%; font-size: 15px; }
+        .search-box input { border: none; background: transparent; width: 100%; font-size: 15px; color: var(--text); font-family: 'Inter', sans-serif; }
 
         /* KATEGORIYALAR */
         .cats-wrapper { background: white; padding: 12px 15px; border-bottom: 1px solid #eee; overflow-x: auto; white-space: nowrap; scrollbar-width: none; flex-shrink: 0; }
         .cats-wrapper::-webkit-scrollbar { display: none; }
-        .cat-btn { display: inline-block; padding: 8px 18px; margin-right: 8px; border-radius: 20px; background: #f0f0f0; font-size: 14px; font-weight: 600; cursor: pointer; border: none; color: #555; transition: 0.2s; }
-        .cat-btn.active { background: var(--brand); color: white; }
+        .cat-btn { display: inline-block; padding: 8px 18px; margin-right: 8px; border-radius: 20px; background: #f4f4f4; font-size: 14px; font-weight: 600; cursor: pointer; border: none; color: #555; transition: 0.2s; }
+        .cat-btn.active { background: var(--brand); color: white; box-shadow: 0 2px 8px rgba(212, 175, 55, 0.3); }
 
         /* ASOSIY OYNALAR */
         .view-container { flex: 1; overflow-y: auto; position: relative; }
@@ -32,13 +40,14 @@
 
         /* MAHSULOTLAR GRID */
         .products-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-        .product-card { background: white; border-radius: 16px; padding: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); display: flex; flex-direction: column; }
-        .product-card img { width: 100%; height: 130px; object-fit: cover; border-radius: 12px; cursor: pointer; }
-        .p-title { font-weight: bold; font-size: 15px; margin: 8px 0 4px 0; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-        .p-price { color: var(--brand); font-weight: 800; font-size: 14px; margin-bottom: 0px; }
+        .product-card { background: white; border-radius: 16px; padding: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); display: flex; flex-direction: column; position: relative; }
+        .product-card img { width: 100%; height: 160px; object-fit: cover; border-radius: 12px; cursor: pointer; }
+        .p-title { font-weight: 600; font-size: 14px; margin: 8px 0 4px 0; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; line-height: 1.3; }
+        .p-price { color: var(--text); font-weight: 800; font-size: 15px; margin-bottom: 0px; }
         .p-stock { font-size: 12px; font-weight: bold; }
-        .add-btn { width: 100%; background: #f0f0f0; border: none; padding: 10px; border-radius: 10px; font-weight: bold; margin-top: auto; cursor: pointer; }
-        .counter { display: flex; justify-content: space-between; align-items: center; background: var(--brand); color: white; border-radius: 10px; margin-top: auto; }
+        .add-btn { width: 100%; background: var(--brand); color: white; border: none; padding: 10px; border-radius: 10px; font-weight: bold; margin-top: auto; cursor: pointer; transition: 0.2s; }
+        .add-btn:active { transform: scale(0.97); }
+        .counter { display: flex; justify-content: space-between; align-items: center; background: var(--text); color: white; border-radius: 10px; margin-top: auto; }
         .btn-m { background: none; border: none; color: white; font-size: 18px; padding: 8px 15px; font-weight: bold; cursor: pointer; }
 
         /* LIST KARTALAR */
@@ -47,8 +56,8 @@
 
         /* PROFIL */
         .profile-header { text-align: center; padding: 30px 0 20px 0; }
-        .avatar { font-size: 70px; background: #e0e0e0; border-radius: 50%; width: 100px; height: 100px; display: inline-flex; justify-content: center; align-items: center; margin-bottom: 15px; }
-        .p-name-big { font-size: 22px; font-weight: 800; margin: 0 0 15px 0; text-transform: capitalize; }
+        .avatar { font-size: 50px; background: white; border: 2px solid var(--brand); border-radius: 50%; width: 90px; height: 90px; display: inline-flex; justify-content: center; align-items: center; margin-bottom: 15px; box-shadow: 0 4px 15px rgba(212, 175, 55, 0.2); }
+        .p-name-big { font-size: 22px; font-weight: 800; margin: 0 0 15px 0; text-transform: capitalize; font-family: 'Playfair Display', serif; }
         .p-info-box { background: white; border-radius: 16px; padding: 15px; margin-bottom: 20px; box-shadow: 0 2px 6px rgba(0,0,0,0.04); }
         .p-row { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #eee; font-size: 15px; }
         .p-row:last-child { border: none; }
@@ -57,7 +66,7 @@
 
         /* NAV BAR */
         .nav { position: fixed; bottom: 0; width: 100%; height: 70px; background: white; border-top: 1px solid #eee; display: flex; z-index: 1000; padding-bottom: env(safe-area-inset-bottom); box-shadow: 0 -2px 10px rgba(0,0,0,0.03); }
-        .nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 11px; color: var(--gray); cursor: pointer; position: relative; }
+        .nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 11px; color: var(--gray); cursor: pointer; position: relative; font-weight: 600; }
         .nav-item .icon { font-size: 22px; margin-bottom: 4px; filter: grayscale(100%); opacity: 0.5; transition: 0.2s; }
         .nav-item.active { color: var(--brand); }
         .nav-item.active .icon { filter: grayscale(0%); opacity: 1; transform: scale(1.1); }
@@ -65,22 +74,22 @@
 
         /* MODALS & FULLSCREEN VIEWS */
         .full-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg); z-index: 2000; overflow-y: auto; padding-bottom: 30px; }
-        .modal-header { position: sticky; top: 0; background: white; padding: 15px; display: flex; align-items: center; gap: 15px; border-bottom: 1px solid #eee; z-index: 10; font-weight: bold; font-size: 18px; }
+        .modal-header { position: sticky; top: 0; background: white; padding: 15px; display: flex; align-items: center; gap: 15px; border-bottom: 1px solid #eee; z-index: 10; font-weight: bold; font-size: 18px; font-family: 'Playfair Display', serif; }
         .back-btn { background: none; border: none; font-size: 24px; color: var(--text); padding: 0; cursor: pointer; }
 
-        .main-btn { background: var(--brand); color: white; border: none; width: 100%; padding: 16px; border-radius: 14px; font-weight: bold; font-size: 16px; cursor: pointer; margin-top: 15px; transition: background 0.2s; }
-        .main-btn:disabled { background: var(--gray); cursor: not-allowed; }
-        .danger-btn { background: var(--red); color: white; border: none; width: 100%; padding: 16px; border-radius: 14px; font-weight: bold; font-size: 16px; cursor: pointer; margin-top: 10px; transition: opacity 0.2s; }
+        .main-btn { background: var(--brand); color: white; border: none; width: 100%; padding: 16px; border-radius: 14px; font-weight: bold; font-size: 16px; cursor: pointer; margin-top: 15px; transition: background 0.2s; box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3); }
+        .main-btn:disabled { background: var(--gray); cursor: not-allowed; box-shadow: none; }
+        .danger-btn { background: var(--red); color: white; border: none; width: 100%; padding: 16px; border-radius: 14px; font-weight: bold; font-size: 16px; cursor: pointer; margin-top: 10px; transition: opacity 0.2s; box-shadow: 0 4px 15px rgba(255, 59, 48, 0.2); }
         .danger-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
-        .input-style { width: 100%; padding: 14px; margin: 8px 0; border: 1px solid #ddd; border-radius: 12px; box-sizing: border-box; font-size: 15px; background: #fafafa; }
+        .input-style { width: 100%; padding: 14px; margin: 8px 0; border: 1px solid #ddd; border-radius: 12px; box-sizing: border-box; font-size: 15px; background: #fafafa; font-family: 'Inter', sans-serif; }
         textarea.input-style { height: 100px; resize: none; }
 
         /* PRODUCT DETAIL */
-        .pd-img { width: 100%; height: 270px; object-fit: cover; }
-        .pd-content { padding: 20px; background: white; border-radius: 20px 20px 0 0; margin-top: -20px; position: relative; min-height: 50vh; }
+        .pd-img { width: 100%; height: 350px; object-fit: cover; }
+        .pd-content { padding: 25px 20px; background: white; border-radius: 25px 25px 0 0; margin-top: -25px; position: relative; min-height: 50vh; box-shadow: 0 -4px 20px rgba(0,0,0,0.05); }
         .pd-flex { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
-        .pd-desc { color: #666; line-height: 1.5; margin-top: 20px; font-size: 15px; white-space: pre-wrap; }
+        .pd-desc { color: #666; line-height: 1.6; margin-top: 20px; font-size: 15px; white-space: pre-wrap; }
 
         /* CUSTOM CONFIRM */
         .confirm-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 3000; justify-content: center; align-items: center; }
@@ -88,27 +97,27 @@
         .confirm-btns { display: flex; gap: 10px; margin-top: 20px; }
         .confirm-btns button { flex: 1; padding: 12px; border: none; border-radius: 10px; font-weight: bold; color: white; font-size: 16px; cursor: pointer; }
         .btn-yes { background: var(--red); }
-        .btn-no { background: var(--brand); }
+        .btn-no { background: var(--text); }
 
         /* ADMIN PANEL */
         .admin-card { background: white; padding: 15px; border-radius: 15px; margin-bottom: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
         .admin-card hr { border: none; border-top: 1px solid #eee; margin: 10px 0; }
 
         .day-group { margin-bottom: 10px; border-radius: 16px; overflow: hidden; background: white; box-shadow: 0 2px 6px rgba(0,0,0,0.05); }
-        .day-group-header { display: flex; align-items: center; justify-content: space-between; padding: 13px 15px; cursor: pointer; background: linear-gradient(135deg, #f3e0ef, #fce4f7); border-bottom: 1px solid #e0d0e0; }
-        .day-group-header .day-label { font-weight: 800; font-size: 15px; color: var(--brand); }
+        .day-group-header { display: flex; align-items: center; justify-content: space-between; padding: 13px 15px; cursor: pointer; background: #fbf8f1; border-bottom: 1px solid #f0e6d2; }
+        .day-group-header .day-label { font-weight: 800; font-size: 15px; color: var(--text); }
         .day-group-header .day-count { font-size: 12px; color: var(--gray); }
         .day-group-header .day-delete-btn { background: var(--red); color: white; border: none; border-radius: 8px; padding: 5px 10px; font-size: 12px; font-weight: bold; cursor: pointer; }
         .day-group-body { padding: 10px; display: none; }
         .day-group-body.open { display: block; }
 
-        .day-banner { background: linear-gradient(135deg, var(--brand), var(--brand-light)); color: white; border-radius: 12px; padding: 14px 15px; margin-bottom: 10px; box-shadow: 0 3px 8px rgba(139,26,107,0.25); }
+        .day-banner { background: linear-gradient(135deg, var(--text), #4a4a4a); color: white; border-radius: 12px; padding: 14px 15px; margin-bottom: 10px; box-shadow: 0 3px 8px rgba(0,0,0,0.15); }
         .day-banner .db-title { font-size: 12px; opacity: 0.85; margin-bottom: 4px; }
-        .day-banner .db-total { font-size: 22px; font-weight: 900; }
+        .day-banner .db-total { font-size: 22px; font-weight: 900; color: var(--brand); }
         .day-banner .db-row { display: flex; justify-content: space-between; font-size: 12px; opacity: 0.9; margin-top: 6px; }
-        .day-banner .db-divider { border: none; border-top: 1px solid rgba(255,255,255,0.3); margin: 8px 0; }
+        .day-banner .db-divider { border: none; border-top: 1px solid rgba(255,255,255,0.2); margin: 8px 0; }
 
-        .status-badge { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 12px; font-weight: bold; }
+        .status-badge { display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: bold; }
         .status-pending  { background: #fff3cd; color: #856404; }
         .status-confirmed { background: #d4edda; color: #155724; }
         .status-rejected  { background: #f8d7da; color: #721c24; }
@@ -119,8 +128,8 @@
         .btn-reject  { background: var(--red); color: white; }
 
         /* RASM YUKLASH */
-        .img-upload-area { border: 2px dashed #ddd; border-radius: 12px; padding: 20px; text-align: center; cursor: pointer; background: #fafafa; margin: 8px 0; position: relative; }
-        .img-upload-area:hover { border-color: var(--brand); background: #fdf0fa; }
+        .img-upload-area { border: 2px dashed #ddd; border-radius: 12px; padding: 20px; text-align: center; cursor: pointer; background: #fafafa; margin: 8px 0; position: relative; transition: 0.2s; }
+        .img-upload-area:hover { border-color: var(--brand); background: #fbf8f1; }
         .img-upload-area input[type=file] { position: absolute; top:0; left:0; width:100%; height:100%; opacity:0; cursor:pointer; }
         .img-upload-area .upload-icon { font-size: 32px; margin-bottom: 8px; }
         .img-upload-area .upload-text { font-size: 14px; color: var(--gray); }
@@ -131,40 +140,39 @@
         /* KATEGORIYA DRAG */
         .cat-drag-item { cursor: grab; user-select: none; -webkit-user-select: none; }
         .cat-drag-item:active { cursor: grabbing; }
-        .cat-drag-item.sortable-ghost { opacity: 0.4; background: #f3e0ef; }
-        .cat-drag-item.sortable-chosen { box-shadow: 0 4px 15px rgba(139,26,107,0.3); }
+        .cat-drag-item.sortable-ghost { opacity: 0.4; background: #fbf8f1; }
+        .cat-drag-item.sortable-chosen { box-shadow: 0 4px 15px rgba(212, 175, 55, 0.2); }
         .drag-handle { font-size: 20px; color: var(--gray); margin-right: 10px; }
 
         /* SOTUVCHI KONTAKT */
-        .seller-contact-card { background: linear-gradient(135deg, var(--brand), var(--brand-light)); color: white; border-radius: 20px; padding: 25px; margin: 15px 0; text-align: center; }
+        .seller-contact-card { background: linear-gradient(135deg, var(--text), #4a4a4a); color: white; border-radius: 20px; padding: 25px; margin: 15px 0; text-align: center; box-shadow: 0 6px 20px rgba(0,0,0,0.1); }
         .seller-contact-card .sc-icon { font-size: 60px; margin-bottom: 10px; }
-        .seller-contact-card h2 { margin: 0 0 20px 0; font-size: 22px; }
-        .seller-info-row { background: rgba(255,255,255,0.15); border-radius: 12px; padding: 14px 18px; margin-bottom: 10px; display: flex; align-items: center; gap: 12px; text-align: left; }
+        .seller-contact-card h2 { margin: 0 0 20px 0; font-size: 24px; font-family: 'Playfair Display', serif; color: var(--brand); }
+        .seller-info-row { background: rgba(255,255,255,0.1); border-radius: 12px; padding: 14px 18px; margin-bottom: 10px; display: flex; align-items: center; gap: 12px; text-align: left; }
         .seller-info-row .si-icon { font-size: 22px; }
         .seller-info-row .si-label { font-size: 12px; opacity: 0.8; }
-        .seller-info-row .si-value { font-size: 16px; font-weight: 700; word-break: break-all; }
+        .seller-info-row .si-value { font-size: 16px; font-weight: 700; word-break: break-all; color: white; }
 
         /* ADMIN SETTINGS SECTION */
-        .settings-section-title { font-size: 13px; font-weight: 700; color: var(--brand); text-transform: uppercase; letter-spacing: 0.5px; margin: 20px 0 8px 0; padding-bottom: 6px; border-bottom: 2px solid #f3e0ef; }
+        .settings-section-title { font-size: 13px; font-weight: 700; color: var(--text); text-transform: uppercase; letter-spacing: 0.5px; margin: 20px 0 8px 0; padding-bottom: 6px; border-bottom: 2px solid #eee; }
 
         /* ADMIN SELECTION MODE BAR */
-        .admin-select-bar { position: sticky; top: 0; z-index: 100; background: var(--brand); color: white; padding: 10px 15px; display: none; flex-direction: column; gap: 8px; border-radius: 0 0 18px 18px; box-shadow: 0 6px 20px rgba(139,26,107,0.4); }
+        .admin-select-bar { position: sticky; top: 0; z-index: 100; background: var(--text); color: white; padding: 10px 15px; display: none; flex-direction: column; gap: 8px; border-radius: 0 0 18px 18px; box-shadow: 0 6px 20px rgba(0,0,0,0.2); }
         .admin-select-bar.show { display: flex; }
         .admin-select-bar .asb-row { display: flex; justify-content: space-between; align-items: center; }
-        .admin-select-bar .asb-title { font-weight: 800; font-size: 15px; }
+        .admin-select-bar .asb-title { font-weight: 800; font-size: 15px; color: var(--brand); }
         .admin-select-bar .asb-hint { font-size: 12px; opacity: 0.85; margin-bottom: 2px; }
         .admin-select-bar .asb-cats { display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none; padding-bottom: 2px; }
         .admin-select-bar .asb-cats::-webkit-scrollbar { display: none; }
-        .asb-cat-btn { background: rgba(255,255,255,0.2); border: 2px solid rgba(255,255,255,0.4); color: white; padding: 6px 14px; border-radius: 20px; font-weight: 700; font-size: 13px; cursor: pointer; white-space: nowrap; flex-shrink: 0; transition: background 0.15s; }
-        .asb-cat-btn:active { background: rgba(255,255,255,0.45); }
+        .asb-cat-btn { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white; padding: 6px 14px; border-radius: 20px; font-weight: 700; font-size: 13px; cursor: pointer; white-space: nowrap; flex-shrink: 0; transition: 0.2s; }
+        .asb-cat-btn:active { background: var(--brand); border-color: var(--brand); }
         .asb-cancel-btn { background: rgba(255,255,255,0.15); border: none; color: white; padding: 7px 14px; border-radius: 20px; font-weight: 700; font-size: 13px; cursor: pointer; white-space: nowrap; }
 
         /* PRODUCT CARD SELECTION */
         .products-grid.selection-active .product-card { cursor: pointer; }
-        .product-card { position: relative; }
         .product-card .select-check { display: none; position: absolute; top: 8px; right: 8px; width: 26px; height: 26px; border-radius: 50%; border: 2.5px solid var(--brand); background: white; align-items: center; justify-content: center; font-size: 14px; font-weight: 900; color: var(--brand); z-index: 5; box-shadow: 0 2px 6px rgba(0,0,0,0.12); transition: background 0.15s, color 0.15s; }
         .products-grid.selection-active .product-card .select-check { display: flex; }
-        .product-card.p-selected { outline: 3px solid var(--brand); background: #fdf0fa; border-radius: 16px; }
+        .product-card.p-selected { outline: 3px solid var(--brand); background: #fbf8f1; border-radius: 16px; }
         .product-card.p-selected .select-check { background: var(--brand); color: white; border-color: var(--brand); }
 
         /* MULTI-CAT CHECKBOXES IN FORM */
@@ -173,27 +181,6 @@
         .cats-check-label:last-child { border: none; }
         .cats-check-label input[type=checkbox] { width: 20px; height: 20px; accent-color: var(--brand); cursor: pointer; flex-shrink: 0; }
         .cats-check-wrap:empty::before { content: 'Avval kategoriya qo\02018oshing'; color: var(--gray); font-size: 13px; }
-
-        /* FABERLIC IMPORT */
-        .method-tabs { display: flex; gap: 8px; margin-bottom: 16px; }
-        .method-tab  { flex: 1; padding: 11px 8px; border: none; border-radius: 12px; font-weight: 700; font-size: 14px; cursor: pointer; transition: 0.2s; }
-        .method-tab.active   { background: var(--brand); color: white; }
-        .method-tab.inactive { background: #e0e0e0; color: #555; }
-
-        .import-info-box { background: #f3e0ef; border-radius: 12px; padding: 12px 15px; margin-bottom: 14px; font-size: 13px; color: #5a0d48; line-height: 1.5; }
-        .import-info-box code { background: rgba(255,255,255,0.6); padding: 1px 5px; border-radius: 4px; font-size: 12px; }
-
-        textarea#import-codes { height: 120px; font-family: monospace; font-size: 14px; letter-spacing: 0.5px; }
-
-        .irc-wrap { margin-top: 12px; }
-        .irc-card { background: white; border-radius: 12px; padding: 12px; margin-bottom: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.06); display: flex; gap: 12px; align-items: center; }
-        .irc-card.ok  { border-left: 4px solid #28a745; }
-        .irc-card.err { border-left: 4px solid var(--red); }
-        .irc-card img { width: 64px; height: 64px; object-fit: cover; border-radius: 10px; flex-shrink: 0; }
-        .irc-info {}
-        .irc-name  { font-weight: 700; font-size: 14px; margin-bottom: 3px; }
-        .irc-price { color: var(--brand); font-weight: 800; font-size: 13px; margin-bottom: 2px; }
-        .irc-meta  { font-size: 11px; color: var(--gray); }
 
         /* LONG PRESS FEEDBACK */
         @keyframes lp-pulse { 0%{transform:scale(1)} 50%{transform:scale(0.96)} 100%{transform:scale(1)} }
@@ -204,7 +191,7 @@
 
     <header class="header" id="main-header">
         <div class="brand">
-            <span class="big">Maftuna</span><span class="amp"> </span><span class="big">Store</span>
+            <span class="big">Maftuna</span><span class="amp"> Store</span>
         </div>
         <div class="search-box">
             <input type="text" id="search-input" placeholder="Mahsulot qidirish..." oninput="filterProducts()">
@@ -220,20 +207,20 @@
                     <span class="asb-title" id="asb-title">0 ta tanlandi</span>
                     <button class="asb-cancel-btn" onclick="exitSelectionMode()">Bekor</button>
                 </div>
-                <div class="asb-hint">Kategoriya tanlang - tanlangan mahsulotlar qoshiladi</div>
+                <div class="asb-hint">Kategoriya tanlang - tanlangan mahsulotlar qo'shiladi</div>
                 <div class="asb-cats" id="asb-cats"></div>
             </div>
             <div id="products-list" class="products-grid"></div>
         </div>
 
         <div id="cart-view" class="view">
-            <h2 style="margin-top:0;">Savat</h2>
+            <h2 style="margin-top:0; font-family: 'Playfair Display', serif;">Savat</h2>
             <div id="cart-items"></div>
         </div>
 
         <div id="orders-view" class="view">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-                <h2 style="margin:0;">Buyurtmalarim</h2>
+                <h2 style="margin:0; font-family: 'Playfair Display', serif;">Buyurtmalarim</h2>
                 <button class="danger-btn" style="width: auto; padding: 8px 15px; margin: 0; font-size: 14px;" onclick="clearMyOrders()">Tarixni tozalash</button>
             </div>
             <div id="my-orders-list"></div>
@@ -248,8 +235,8 @@
                 <div class="p-row"><b>Telefon:</b> <span id="prof-phone">+998 __ ___ __ __</span></div>
                 <div class="p-row"><b>Tug'ilgan sana:</b> <span id="prof-dob">Kun/Oy/Yil</span></div>
             </div>
-            <button class="main-btn" onclick="openSellerContact()" style="background: linear-gradient(135deg, var(--brand), var(--brand-light)); margin-top:0;">📞 Sotuvchi bilan bog'lanish</button>
-            <button class="main-btn" onclick="openProfileEdit()" style="background:#e0e0e0; color:#333;">Ma'lumotlarni tahrirlash</button>
+            <button class="main-btn" onclick="openSellerContact()" style="background: linear-gradient(135deg, var(--text), #4a4a4a); margin-top:0;">📞 Sotuvchi bilan bog'lanish</button>
+            <button class="main-btn" onclick="openProfileEdit()" style="background:#e0e0e0; color:#333; box-shadow: none;">Ma'lumotlarni tahrirlash</button>
             <button id="btn-admin-panel" class="main-btn" style="background:#000; display:none; margin-top:20px;" onclick="openAdminPanel()">👨‍💻 ADMIN PANEL</button>
         </div>
 
@@ -270,13 +257,13 @@
         <img id="pm-img" class="pd-img" src="">
         <div class="pd-content">
             <div class="pd-flex">
-                <div>
-                    <h2 id="pm-name" style="margin:0 0 5px 0;">Nomi</h2>
-                    <div id="pm-price" style="color:var(--brand); font-size:18px; font-weight:800;">Narxi</div>
+                <div style="flex: 1; padding-right: 15px;">
+                    <h2 id="pm-name" style="margin:0 0 5px 0; font-family: 'Playfair Display', serif; font-size: 22px;">Nomi</h2>
+                    <div id="pm-price" style="color:var(--text); font-size:20px; font-weight:800;">Narxi</div>
                 </div>
-                <div id="pm-action"></div>
+                <div id="pm-action" style="flex-shrink: 0;"></div>
             </div>
-            <hr style="border:none; border-top:1px solid #eee;">
+            <hr style="border:none; border-top:1px solid #eee; margin: 20px 0;">
             <div class="pd-desc" id="pm-desc">Tavsif...</div>
         </div>
     </div>
@@ -284,7 +271,7 @@
     <div id="order-detail-modal" class="full-modal" style="z-index: 9999;">
         <div class="modal-header">
             <button class="back-btn" onclick="closeModal('order-detail-modal')">←</button>
-            <span>Buyurtma tavsiloti</span>
+            <span>Buyurtma tafsiloti</span>
         </div>
         <div style="padding: 15px;" id="od-content"></div>
     </div>
@@ -311,9 +298,9 @@
             <span>Buyurtmani rasmiylashtirish</span>
         </div>
         <div style="padding: 20px;">
-            <h2 style="text-align:center; margin-top:0;">Umumiy narx: <br><span id="checkout-total" style="color:var(--brand);">0 so'm</span></h2>
+            <h2 style="text-align:center; margin-top:0; font-family: 'Playfair Display', serif;">Umumiy narx: <br><span id="checkout-total" style="color:var(--brand);">0 so'm</span></h2>
             <label style="font-weight:bold; color:var(--gray); margin-top:20px; display:block;">Buyurtma olib ketish joyi (Manzil):</label>
-            <button id="btn-location" class="main-btn" style="background:#e0e0e0; color:#333; padding:12px; margin: 10px 0; font-size: 15px;" onclick="getLocation()">📍 Joylashuvimni aniqlash (GPS)</button>
+            <button id="btn-location" class="main-btn" style="background:#e0e0e0; color:#333; padding:12px; margin: 10px 0; font-size: 15px; box-shadow: none;" onclick="getLocation()">📍 Joylashuvimni aniqlash (GPS)</button>
             <textarea id="checkout-address" class="input-style" placeholder="Shahar, ko'cha, uy raqami yoki mo'ljal..."></textarea>
             <button id="btn-submit-order" class="main-btn" onclick="submitOrder()">Tasdiqlash va Yuborish</button>
         </div>
@@ -362,7 +349,7 @@
         <div style="padding: 15px;">
             <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-bottom:20px;">
                 <div class="admin-card" style="text-align:center; cursor:pointer;" onclick="openAdminView('admin-orders')">📦 Buyurtma</div>
-                <div class="admin-card" style="text-align:center; cursor:pointer;" onclick="openAdminView('admin-prods')">💄 Mahsulot</div>
+                <div class="admin-card" style="text-align:center; cursor:pointer;" onclick="openAdminView('admin-prods')">👗 Mahsulot</div>
                 <div class="admin-card" style="text-align:center; cursor:pointer;" onclick="openAdminView('admin-add-prod')">➕ Qo'shish</div>
                 <div class="admin-card" style="text-align:center; cursor:pointer;" onclick="openAdminView('admin-cats')">📁 Kategoriya</div>
                 <div class="admin-card" style="text-align:center; cursor:pointer;" onclick="openAdminView('admin-users')">🛡 Adminlar</div>
@@ -376,7 +363,7 @@
                 <label style="font-weight:bold; color:var(--gray); margin-top:10px; display:block;">Minimal buyurtma miqdori (so'm)</label>
                 <input type="number" id="as-min-order" class="input-style" placeholder="50000">
                 <label style="font-weight:bold; color:var(--gray); margin-top:10px; display:block;">Ustama narx (Xizmat haqi %)</label>
-                <input type="number" id="as-fee-percent" class="input-style" placeholder="3">
+                <input type="number" id="as-fee-percent" class="input-style" placeholder="0">
 
                 <div class="settings-section-title">📞 Sotuvchi ma'lumotlari</div>
                 <label style="font-weight:bold; color:var(--gray); margin-top:10px; display:block;">Sotuvchi telefon raqami</label>
@@ -406,24 +393,19 @@
             </div>
 
             <div id="admin-add-prod" class="admin-section" style="display:none;">
-                <h3 id="form-title" style="margin-top:0;">Mahsulot qo'shish</h3>
-
-                <div class="method-tabs">
-                    <button id="btn-method-manual" class="method-tab active" onclick="switchAddMethod('manual')">✍️ Qo'lda</button>
-                    <button id="btn-method-code"   class="method-tab inactive" onclick="switchAddMethod('code')">🔢 Kod orqali</button>
-                </div>
+                <h3 id="form-title" style="margin-top:0;">Yangi mahsulot</h3>
 
                 <div id="add-manual-section">
                     <input type="hidden" id="ap-id">
                     <input type="hidden" id="ap-img-url">
-                    <input type="text"   id="ap-name"  class="input-style" placeholder="Nomi (M: Atir. 3128)">
+                    <input type="text"   id="ap-name"  class="input-style" placeholder="Nomi (M: Ayollar ko'ylagi)">
                     <input type="number" id="ap-price" class="input-style" placeholder="Narxi (so'm)">
-                    <input type="text"   id="ap-count" class="input-style" placeholder="Soni (Cheksiz uchun # qoldiring)">
+                    <input type="text"   id="ap-count" class="input-style" placeholder="Soni (Cheksiz bo'lsa # qoldiring)">
                     <div style="margin: 8px 0;">
                         <label style="font-weight:bold; color:var(--gray); display:block; margin-bottom:4px;">Kategoriyalar (bir yoki koʼproq tanlang)</label>
                         <div id="ap-cats-container" class="cats-check-wrap"></div>
                     </div>
-                    <textarea id="ap-desc" class="input-style" placeholder="Hajmi: 50 ml.\nTavsifi: ..."></textarea>
+                    <textarea id="ap-desc" class="input-style" placeholder="Matosi: Paxta...\nTavsifi: ..."></textarea>
 
                     <label style="font-weight:bold; color:var(--gray); display:block; margin-top:5px;">Mahsulot rasmi</label>
                     <div class="img-upload-area" id="upload-area" onclick="document.getElementById('ap-img-file').click()">
@@ -435,24 +417,7 @@
                     <img id="ap-img-preview" class="img-preview" src="" alt="Preview">
 
                     <button class="main-btn" onclick="saveProduct()">Saqlash</button>
-                    <button class="danger-btn" style="background:#8e8e93;" onclick="resetAdminForm()">Bekor qilish</button>
-                </div>
-
-                <div id="add-code-section" style="display:none;">
-                    <div class="import-info-box">
-                        📌 <b>Faberlic mahsulotining uzun kodini</b> kiriting (masalan, <code>010501-064062</code>).<br>
-                        Bir nechta kod kiritmoqchi bo'lsangiz, har birini yangi qatorga yozing.
-                    </div>
-
-                    <textarea id="import-codes" class="input-style" placeholder="010501-035714
-010502-00038
-010503-00126"></textarea>
-
-                    <button id="btn-fetch-codes" class="main-btn" onclick="fetchByCode()" style="margin-top:8px;">🔍 Yuklab olish</button>
-
-                    <div id="import-results" class="irc-wrap"></div>
-
-                    <button id="btn-save-imported" class="main-btn" onclick="saveImportedProducts()" style="display:none; background:#28a745; margin-top:4px;">💾 Saqlash</button>
+                    <button class="danger-btn" style="background:#8e8e93; box-shadow:none;" onclick="resetAdminForm()">Bekor qilish</button>
                 </div>
             </div>
 
@@ -493,13 +458,14 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getFirestore, collection, onSnapshot, addDoc, deleteDoc, doc, updateDoc, setDoc, getDoc, query, orderBy } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
+        // Siz yuborgan YANQI Firebase ma'lumotlari:
         const firebaseConfig = {
-            apiKey: "AIzaSyC7-Ucmh7BbdhabJ4sJ-xxvCwMabsHqSBY",
-            authDomain: "faberlic-983d0.firebaseapp.com",
-            projectId: "faberlic-983d0",
-            storageBucket: "faberlic-983d0.firebasestorage.app",
-            messagingSenderId: "263872787979",
-            appId: "1:263872787979:web:a4271389f20b5dd407390e"
+            apiKey: "AIzaSyDFfrxjQ7rMWuQUwJ-KiqyHiDP2inoM-sA",
+            authDomain: "liboslar.firebaseapp.com",
+            projectId: "liboslar",
+            storageBucket: "liboslar.firebasestorage.app",
+            messagingSenderId: "917783184788",
+            appId: "1:917783184788:web:efb4caa04887a2ee437b81"
         };
 
         const app = initializeApp(firebaseConfig);
@@ -507,6 +473,8 @@
 
         let tg = window.Telegram.WebApp;
         tg.expand();
+        tg.backgroundColor = "#FDFBF7";
+        tg.headerColor = "#FFFFFF";
 
         let userId   = tg.initDataUnsafe?.user?.id?.toString() || "123456789";
         let userName = tg.initDataUnsafe?.user?.first_name || "Foydalanuvchi";
@@ -521,7 +489,7 @@
         let currentCat       = "Hammasi";
         let searchQuery      = "";
         let userData         = { phone: "", dob: "" };
-        let globalSettings   = { minOrder: 0, feePercent: 3 };
+        let globalSettings   = { minOrder: 0, feePercent: 0 };
         let sellerContact    = { phone: "", telegram: "", address: "" };
         let categorySortable = null;
         let isAdmin          = false;
@@ -596,7 +564,7 @@
 
         onSnapshot(doc(db, "settings", "general"), (docSnap) => {
             if (docSnap.exists()) globalSettings = docSnap.data();
-            else globalSettings = { minOrder: 50000, feePercent: 3 };
+            else globalSettings = { minOrder: 0, feePercent: 0 };
             document.getElementById('as-min-order').value  = globalSettings.minOrder || '';
             document.getElementById('as-fee-percent').value = globalSettings.feePercent || '';
             renderCart();
@@ -741,17 +709,17 @@
                     <div class="select-check"></div>
                     <img src="${p.img || 'https://via.placeholder.com/300'}" onclick="openProductModal('${p.id}')" onerror="this.src='https://via.placeholder.com/300'">
                     <div class="p-title">${p.name}</div>
-                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
                         <div class="p-price">${Number(p.price).toLocaleString()} so'm</div>
                         <div class="p-stock" style="color:${isOut ? 'var(--red)' : 'var(--gray)'}">
                             ${isOut ? 'Tugagan' : (isInfinity ? '∞' : stockNum + ' ta')}
                         </div>
                     </div>
                     ${isOut
-                        ? `<button class="add-btn" disabled style="background:#ccc; color:#666;">Sotib bo'lingan</button>`
+                        ? `<button class="add-btn" disabled style="background:#ccc; color:#666; box-shadow:none;">Sotib bo'lingan</button>`
                         : (q > 0
                             ? `<div class="counter"><button class="btn-m" onclick="updateCart('${p.id}',-1)">-</button><span>${q}</span><button class="btn-m" onclick="updateCart('${p.id}',1)">+</button></div>`
-                            : `<button class="add-btn" onclick="updateCart('${p.id}',1)">Savatga</button>`)
+                            : `<button class="add-btn" onclick="updateCart('${p.id}',1)">Savatga qo'shish</button>`)
                     }
                 </div>`;
             }).join('');
@@ -776,7 +744,7 @@
             let newQty     = cart[id].qty + delta;
             let isInfinity = (p.count || '#') === '#';
             let stockNum   = isInfinity ? Infinity : Number(p.count);
-            if (delta > 0 && newQty > stockNum) return tg.showAlert(`Kechirasiz, omborda faqat ${stockNum} ta bor.`);
+            if (delta > 0 && newQty > stockNum) return tg.showAlert(`Kechirasiz, do'konda faqat ${stockNum} ta bor.`);
             cart[id].qty = newQty;
             if (cart[id].qty <= 0) delete cart[id];
             renderMenu();
@@ -866,7 +834,7 @@
                 <div class="list-card">
                     <div class="list-info">
                         <b style="font-size:15px;">${p.name}</b>
-                        <span style="color:var(--brand); font-weight:bold;">${Number(p.price).toLocaleString()} so'm</span>
+                        <span style="color:var(--text); font-weight:800;">${Number(p.price).toLocaleString()} so'm</span>
                     </div>
                     <div class="counter" style="min-width: 100px;">
                         <button class="btn-m" onclick="updateCart('${p.id}',-1)">-</button>
@@ -884,8 +852,8 @@
                     <span>Xizmat haqi (${feePercent}%):</span><span>+${feeAmount.toLocaleString()} so'm</span>
                 </div>` : ''}
                 <hr style="border:none; border-top:1px solid #eee;">
-                <div style="display:flex; justify-content:space-between; font-size:18px; font-weight:800; margin-top:10px; margin-bottom:15px;">
-                    <span>Jami:</span><span>${finalTotal.toLocaleString()} so'm</span>
+                <div style="display:flex; justify-content:space-between; font-size:20px; font-weight:800; margin-top:10px; margin-bottom:15px; font-family: 'Playfair Display', serif;">
+                    <span>Jami:</span><span style="color: var(--brand);">${finalTotal.toLocaleString()} so'm</span>
                 </div>
                 ${!isMinMet ? `<p style="color:red; font-size:12px; text-align:center;">Minimal xarid: ${minOrder.toLocaleString()} so'm</p>` : ''}
                 <button class="main-btn" style="margin:0;" onclick="openCheckout()" ${!isMinMet ? 'disabled' : ''}>Buyurtma berish</button>
@@ -911,7 +879,7 @@
                         <span style="color:var(--gray); font-size:13px;">${new Date(o.date).toLocaleString()}</span>
                         ${statusBadge(o.status)}
                     </div>
-                    <div style="font-weight:800; color:var(--brand);">${Number(o.total).toLocaleString()} so'm</div>
+                    <div style="font-weight:800; color:var(--text);">${Number(o.total).toLocaleString()} so'm</div>
                 </div>
             `).join('');
         };
@@ -934,7 +902,7 @@
                         <div class="p-row"><b>Telefon:</b> <span>${o.phone}</span></div>
                     ` : ''}
                 </div>
-                <h3 style="margin-top:20px;">Mahsulotlar:</h3>
+                <h3 style="margin-top:20px; font-family: 'Playfair Display', serif;">Mahsulotlar:</h3>
                 <div class="p-info-box">
                     ${o.items.map(i => `
                         <div class="p-row"><span>${i.name} (${i.qty}x)</span><span>${(i.price * i.qty).toLocaleString()} so'm</span></div>
@@ -943,7 +911,7 @@
                     ${subtotal > 0 ? `<div class="p-row" style="color:var(--gray); font-size:14px;"><span>Katalog narxi:</span><span>${subtotal.toLocaleString()} so'm</span></div>` : ''}
                     ${feePercent > 0 ? `<div class="p-row" style="color:var(--gray); font-size:14px;"><span>Xizmat haqi (${feePercent}%):</span><span>+${feeAmount.toLocaleString()} so'm</span></div>` : ''}
                     <div class="p-row" style="border-top:2px solid #eee; margin-top:5px;">
-                        <b>Jami:</b> <span style="color:var(--brand); font-size:18px;">${Number(o.total).toLocaleString()} so'm</span>
+                        <b style="font-family: 'Playfair Display', serif;">Jami:</b> <span style="color:var(--brand); font-size:20px; font-weight: 800;">${Number(o.total).toLocaleString()} so'm</span>
                     </div>
                 </div>
                 ${isAdmin && (!o.status || o.status === 'pending') ? `
@@ -1182,7 +1150,7 @@
                             <div class="db-row"><span>Xizmat haqi (${feePercent}%):</span><span>${dayFee.toLocaleString()} so'm</span></div>
                         </div>
                         ${orders.map(o => {
-                            let borderColor = o.status === 'confirmed' ? '#8B1A6B' : o.status === 'rejected' ? '#ff3b30' : '#aaa';
+                            let borderColor = o.status === 'confirmed' ? '#D4AF37' : o.status === 'rejected' ? '#ff3b30' : '#aaa';
                             return `
                             <div class="admin-card" style="cursor:pointer; border-left:4px solid ${borderColor};">
                                 <div onclick="openOrderDetails('${o.id}')">
@@ -1195,7 +1163,7 @@
                                     <hr>
                                     <div style="display:flex; justify-content:space-between; font-weight:bold;">
                                         <span>${o.items.length} xil mahsulot</span>
-                                        <span style="color:var(--brand);">${Number(o.total).toLocaleString()} so'm</span>
+                                        <span style="color:var(--text);">${Number(o.total).toLocaleString()} so'm</span>
                                     </div>
                                 </div>
                                 ${(!o.status || o.status === 'pending') ? `
@@ -1241,14 +1209,14 @@
             let stock = (p.count || '#') === '#' ? '∞' : p.count + ' ta';
             let pCats = p.cats || (p.cat ? [p.cat] : []);
             let catsHtml = pCats.length > 1
-                ? `<div style="font-size:11px; color:var(--brand); margin-top:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">📁 ${pCats.join(' · ')}</div>`
+                ? `<div style="font-size:11px; color:var(--text); margin-top:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">📁 ${pCats.join(' · ')}</div>`
                 : '';
             return `
             <div class="admin-card" style="display:flex; gap:10px; align-items:center;">
                 <img src="${p.img || 'https://via.placeholder.com/50'}" style="width:65px; height:65px; border-radius:10px; object-fit:cover;" onerror="this.src='https://via.placeholder.com/50'">
                 <div style="flex:1; min-width:0;">
                     <b style="display:block; font-size:15px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${p.name}</b>
-                    <span style="color:var(--brand); font-weight:bold;">${Number(p.price).toLocaleString()} so'm</span>
+                    <span style="color:var(--text); font-weight:800;">${Number(p.price).toLocaleString()} so'm</span>
                     <div style="font-size:12px; color:var(--gray);">Qoldiq: ${stock}</div>
                     ${catsHtml}
                 </div>
@@ -1342,7 +1310,6 @@
         window.editProduct = (id) => {
             let p = products.find(x => x.id === id); if (!p) return;
             openAdminView('admin-add-prod');
-            switchAddMethod('manual');   
             document.getElementById('ap-id').value      = p.id;
             document.getElementById('ap-name').value    = p.name;
             document.getElementById('ap-price').value   = p.price;
@@ -1375,11 +1342,6 @@
             document.getElementById('ap-desc').value    = "";
             document.getElementById('form-title').innerText = "Yangi mahsulot";
             document.querySelectorAll('.ap-cat-cb').forEach(cb => cb.checked = false);
-            switchAddMethod('manual');
-            document.getElementById('import-codes').value    = '';
-            document.getElementById('import-results').innerHTML = '';
-            document.getElementById('btn-save-imported').style.display = 'none';
-            importedProducts = [];
             resetAdminFormUI();
         };
 
@@ -1468,156 +1430,6 @@
             if (tabId === 'cart') renderCart();
         };
 
-        // ── FABERLIC UZUN KOD ORQALI IMPORT ───────────────────────────────────
-        let importedProducts = [];
-
-        const FABERLIC_API_BASE   = "https://faberlic.com/flecom/api/v1/products";
-        const FABERLIC_API_PARAMS = "baseStore=UZB_9300&priceGroup=PRIV&nextPeriodPriceEnabled=false&language=uz";
-        const FABERLIC_IMG_BASE   = "https://faberlic.com/medias/";
-
-        // HTML teglarini tozalash
-        function stripHtmlImport(html) {
-            if (!html) return '';
-            return html
-                .replace(/<br\s*\/?>/gi, '\n')
-                .replace(/<\/p>/gi, '\n')
-                .replace(/<\/li>/gi, '\n')
-                .replace(/<li>/gi, '• ')
-                .replace(/<[^>]*>/g, '')
-                .replace(/&/g, '&').replace(/</g, '<').replace(/>/g, '>').replace(/ /g, ' ')
-                .replace(/\n{3,}/g, '\n\n')
-                .trim();
-        }
-
-        window.switchAddMethod = (method) => {
-            const isManual = method === 'manual';
-            document.getElementById('add-manual-section').style.display = isManual ? 'block' : 'none';
-            document.getElementById('add-code-section').style.display   = isManual ? 'none'  : 'block';
-            document.getElementById('btn-method-manual').className = 'method-tab ' + (isManual ? 'active' : 'inactive');
-            document.getElementById('btn-method-code').className   = 'method-tab ' + (isManual ? 'inactive' : 'active');
-            if (isManual) document.getElementById('form-title').innerText = 'Yangi mahsulot';
-            else          document.getElementById('form-title').innerText = 'Faberlic import';
-        };
-
-        window.fetchByCode = async () => {
-            const codesText = document.getElementById('import-codes').value.trim();
-            const codes = codesText.split(/[\n,;]+/).map(c => c.trim()).filter(Boolean);
-
-            if (!codes.length) { tg.showAlert("Kamida bitta kod kiriting!"); return; }
-
-            const btn        = document.getElementById('btn-fetch-codes');
-            const saveBtn    = document.getElementById('btn-save-imported');
-            const resultArea = document.getElementById('import-results');
-
-            btn.disabled    = true;
-            btn.textContent = '⏳ Yuklanmoqda...';
-            resultArea.innerHTML = '';
-            saveBtn.style.display = 'none';
-            importedProducts = [];
-
-            for (let i = 0; i < codes.length; i++) {
-                const code = codes[i];
-                btn.textContent = `⏳ ${i + 1}/${codes.length} yuklanmoqda...`;
-                try {
-                    const productUrl = `${FABERLIC_API_BASE}/${encodeURIComponent(code)}?${FABERLIC_API_PARAMS}`;
-                    const resp = await fetch(productUrl);
-
-                    if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
-                    const json = await resp.json();
-                    const data = json.data;
-                    if (!data) throw new Error("Ma'lumot topilmadi");
-
-                    const defaultImg = (data.img || []).find(img => img.isDefault) || (data.img || [])[0];
-                    const imgUrl     = defaultImg ? `${FABERLIC_IMG_BASE}${defaultImg.file}` : '';
-                    
-                    const finalName = `${data.name || 'Nomsiz'}${data.article ? '. ' + data.article : ''}`;
-                    
-                    const mainDesc    = stripHtmlImport(data.description || data.shortDescription || data.fullDesc || data.desc || '');
-                    const appDesc     = stripHtmlImport(data.applicationModeDesc || '');
-                    const composition = stripHtmlImport(data.composition || '');
-                    
-                    const volumeStr   = data.volume ? `Hajmi: ${data.volume}` : '';
-                    const weightStr   = data.weight ? `Og'irligi: ${data.weight}` : '';
-
-                    const descParts = [];
-                    if (volumeStr) descParts.push(volumeStr);
-                    if (weightStr) descParts.push(weightStr);
-                    if (mainDesc) descParts.push(`📝 *Tavsif:*\n${mainDesc}`);
-                    if (appDesc) descParts.push(`💡 *Qo'llanilishi:*\n${appDesc}`);
-                    if (composition) descParts.push(`🧪 *Tarkibi:*\n${composition}`);
-
-                    const finalDesc = descParts.join('\n\n');
-                    const articleNum = data.code || data.article || code;
-
-                    const product = {
-                        name:    finalName,
-                        img:     imgUrl,
-                        price:   data.catalogPrice || data.price || 0,
-                        count:   '#',
-                        cats:    [],
-                        cat:     '',
-                        desc:    finalDesc,
-                        article: articleNum,
-                        fabCode: code
-                    };
-
-                    importedProducts.push(product);
-
-                    resultArea.innerHTML += `
-                        <div class="irc-card ok">
-                            <img src="${imgUrl}" onerror="this.src='https://via.placeholder.com/64'" alt="">
-                            <div class="irc-info">
-                                <div class="irc-name">${finalName}</div>
-                                <div class="irc-price">${Number(data.catalogPrice).toLocaleString()} so'm</div>
-                                <div class="irc-meta">✅ Tayyor · Kod: ${code}</div>
-                            </div>
-                        </div>`;
-                } catch (err) {
-                    let errMsg = err.message;
-                    resultArea.innerHTML += `
-                        <div class="irc-card err">
-                            <div class="irc-info">
-                                <div class="irc-name" style="color:var(--red);">❌ Kod: ${code}</div>
-                                <div class="irc-meta">${errMsg}</div>
-                            </div>
-                        </div>`;
-                }
-
-                await new Promise(r => setTimeout(r, 400));
-            }
-
-            btn.disabled    = false;
-            btn.textContent = '🔍 Yuklab olish';
-
-            if (importedProducts.length > 0) {
-                saveBtn.style.display  = 'block';
-                saveBtn.textContent    = `💾 ${importedProducts.length} ta mahsulotni saqlash`;
-            }
-        };
-
-        window.saveImportedProducts = async () => {
-            if (!importedProducts.length) return;
-            const btn = document.getElementById('btn-save-imported');
-            btn.disabled    = true;
-            btn.textContent = '⏳ Saqlanmoqda...';
-
-            let saved = 0;
-            for (const product of importedProducts) {
-                try {
-                    await addDoc(collection(db, "products"), product);
-                    saved++;
-                } catch (err) {
-                    console.error("Saqlashda xatolik:", err);
-                }
-            }
-
-            importedProducts = [];
-            btn.style.display = 'none';
-            document.getElementById('import-codes').value  = '';
-            document.getElementById('import-results').innerHTML = '';
-            tg.showAlert(`✅ ${saved} ta mahsulot muvaffaqiyatli saqlandi!\n\nKategoriya belgilash uchun mahsulot ustiga uzoq bosing.`);
-        };
-
         window.openProductModal = (id) => {
             let p = products.find(x => x.id === id); if (!p) return;
             document.getElementById('pm-img').src        = p.img || 'https://via.placeholder.com/400';
@@ -1632,7 +1444,7 @@
             } else if (q > 0) {
                 actionDiv.innerHTML = `<div class="counter" style="min-width:110px;"><button class="btn-m" onclick="updateCart('${p.id}',-1)">-</button><span>${q}</span><button class="btn-m" onclick="updateCart('${p.id}',1)">+</button></div>`;
             } else {
-                actionDiv.innerHTML = `<button class="main-btn" style="margin:0; padding:10px 20px; border-radius:10px;" onclick="updateCart('${p.id}',1)">Savatga</button>`;
+                actionDiv.innerHTML = `<button class="main-btn" style="margin:0; padding:10px 20px; border-radius:10px; box-shadow:none;" onclick="updateCart('${p.id}',1)">Savatga</button>`;
             }
             document.getElementById('product-modal').style.display = 'block';
         };
