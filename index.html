@@ -365,7 +365,7 @@
                         <div class="si-label">Telegram</div>
                         <div class="si-value" id="sc-telegram">—</div>
                     </div>
-                </a>
+                </div>
                 <div class="seller-info-row" id="sc-address-row" style="display:none;">
                     <div class="si-icon">📍</div>
                     <div>
@@ -559,10 +559,71 @@
 
         const IMGBB_API_KEY = "b2d8a186f54db4ca35a446925ec3ebdf";
 
+        // --- AI ANALIZ FUNKSIYASI ---
+        window.analyzeImageWithAI = async (file) => {
+            const nameInput = document.getElementById('ap-name');
+            const descInput = document.getElementById('ap-desc');
+            
+            if(nameInput) nameInput.value = "AI tahlil qilmoqda (Nomi)...";
+            if(descInput) descInput.value = "AI tahlil qilmoqda (Tavsifi)...";
+
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = async function () {
+                const base64Image = reader.result.split(',')[1];
+                const apiKey = "AQ.Ab8RN6KbToB9NrEZ4eJsHGcomqTb-19BDYfFACoIcyu6QRfjgA";
+                const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
+
+                try {
+                    const response = await fetch(url, {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({
+                            contents: [{
+                                parts: [
+                                    { text: "Ushbu kiyim/buyumni tahlil qilib, savdo do'koni uchun mos va jozibador qisqacha 'Nomi' va 'Tavsifi'ni o'zbek tilida yozib ber. Natijani qat'iy ravishda faqat JSON formatida qaytar: {\"name\": \"Mahsulot nomi\", \"desc\": \"Tavsifi...\"}" },
+                                    { inline_data: { mime_type: file.type || "image/jpeg", data: base64Image } }
+                                ]
+                            }]
+                        })
+                    });
+
+                    const data = await response.json();
+                    
+                    if (data.candidates && data.candidates.length > 0) {
+                        let textResult = data.candidates[0].content.parts[0].text;
+                        textResult = textResult.replace(/```json/g, "").replace(/```/g, "").trim();
+                        
+                        const resultObj = JSON.parse(textResult);
+                        
+                        if(nameInput) nameInput.value = resultObj.name || "";
+                        if(descInput) descInput.value = resultObj.desc || "";
+                        
+                        if (tg && tg.showAlert) {
+                           tg.showAlert("AI tahlili yakunlandi! Endi narx va sonini kiriting.");
+                        } else {
+                           alert("AI tahlili yakunlandi! Endi narx va sonini kiriting.");
+                        }
+                    } else {
+                        throw new Error("AI javob qaytarmadi.");
+                    }
+                } catch (err) {
+                    console.error("AI xatosi:", err);
+                    if(nameInput && nameInput.value.includes("tahlil")) nameInput.value = "";
+                    if(descInput) descInput.value = "Tahlil qilishda xatolik yuz berdi. Iltimos, o'zingiz kiriting.";
+                }
+            };
+        };
+
         // RASMNI 4:3 FORMATGA (OQ FON BILAN) AVTOMATIK MOSLASHTIRISH
         window.handleImageUploadAutoProcess = async (input) => {
             const file = input.files[0];
             if (!file) return;
+
+            // --- AI Analizni shu yerda chaqiramiz ---
+            window.analyzeImageWithAI(file);
+            // ----------------------------------------
+
             const spinner = document.getElementById('upload-spinner');
             const preview = document.getElementById('ap-img-preview');
             const area    = document.getElementById('upload-area');
