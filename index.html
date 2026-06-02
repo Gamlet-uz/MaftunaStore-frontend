@@ -77,7 +77,7 @@
         .modal-header { position: sticky; top: 0; background: white; padding: 15px; display: flex; align-items: center; gap: 15px; border-bottom: 1px solid #eee; z-index: 10; font-weight: bold; font-size: 18px; font-family: 'Playfair Display', serif; }
         .back-btn { background: none; border: none; font-size: 24px; color: var(--text); padding: 0; cursor: pointer; }
 
-        .main-btn { background: var(--brand); color: white; border: none; width: 100%; padding: 16px; border-radius: 14px; font-weight: bold; font-size: 16px; cursor: pointer; margin-top: 15px; transition: background 0.2s; box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3); }
+        .main-btn { background: var(--brand); color: white; border: none; width: 100%; padding: 16px; border-radius: 14px; font-weight: bold; font-size: 16px; cursor: margin-top: 15px; transition: background 0.2s; box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3); }
         .main-btn:disabled { background: var(--gray); cursor: not-allowed; box-shadow: none; }
         .danger-btn { background: var(--red); color: white; border: none; width: 100%; padding: 16px; border-radius: 14px; font-weight: bold; font-size: 16px; cursor: pointer; margin-top: 10px; transition: opacity 0.2s; box-shadow: 0 4px 15px rgba(255, 59, 48, 0.2); }
         .danger-btn:disabled { opacity: 0.5; cursor: not-allowed; }
@@ -304,7 +304,7 @@
         <div id="favorites-list" class="products-grid" style="padding: 15px;"></div>
     </div>
 
-    <div id="order-detail-modal" class="full-modal" style="z-index: 9999;">
+    <div id="order-detail-modal" class="full-modal" style="z-index: 3000;">
         <div class="modal-header">
             <button class="back-btn" onclick="closeModal('order-detail-modal')">←</button>
             <span>Buyurtma tafsiloti</span>
@@ -329,7 +329,7 @@
         </div>
     </div>
 
-    <div id="checkout-modal" class="full-modal" style="background: white;">
+    <div id="checkout-modal" class="full-modal" style="background: white; z-index: 3000;">
         <div class="modal-header">
             <button class="back-btn" onclick="closeModal('checkout-modal')">←</button>
             <span>Buyurtmani rasmiylashtirish</span>
@@ -343,7 +343,7 @@
         </div>
     </div>
 
-    <div id="seller-contact-modal" class="full-modal" style="background: white;">
+    <div id="seller-contact-modal" class="full-modal" style="background: white; z-index: 3000;">
         <div class="modal-header">
             <button class="back-btn" onclick="closeModal('seller-contact-modal')">←</button>
             <span>Sotuvchi bilan bog'lanish</span>
@@ -378,7 +378,7 @@
         </div>
     </div>
 
-    <div id="admin-panel-modal" class="full-modal">
+    <div id="admin-panel-modal" class="full-modal" style="z-index: 3000; background: var(--bg);">
         <div class="modal-header">
             <button class="back-btn" onclick="closeModal('admin-panel-modal')">←</button>
             <span>Boshqaruv Paneli</span>
@@ -1061,7 +1061,7 @@
             let feePercent = Number(o.feePercent || 0);
             let subtotal   = Number(o.subtotal   || 0);
             let feeAmount  = Number(o.feeAmount  || 0);
-            let isAdmin    = admins.includes(userId);
+            let isAdmin    = admins.some(adminId => String(adminId) === String(userId));
             let html = `
                 <div class="p-info-box">
                     <div class="p-row"><b>Buyurtma raqami:</b> <span>#${o.orderNum}</span></div>
@@ -1316,10 +1316,14 @@
             }).join('');
         }
 
+        // ---------- MUHIM QISM SHU YERDA ----------
         function checkAdmin() {
-            isAdmin = admins.includes(userId);
+            // Firebase'dagi ID number bo'lib qolgan bo'lsa ham qat'iy tekshiradi:
+            isAdmin = admins.some(adminId => String(adminId) === String(userId));
             document.getElementById('btn-admin-panel').style.display = isAdmin ? 'block' : 'none';
         }
+        // ------------------------------------------
+
         window.openAdminPanel = () => {
             document.getElementById('admin-panel-modal').style.display = 'block';
             openAdminView('admin-orders');
