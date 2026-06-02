@@ -77,7 +77,7 @@
         .modal-header { position: sticky; top: 0; background: white; padding: 15px; display: flex; align-items: center; gap: 15px; border-bottom: 1px solid #eee; z-index: 10; font-weight: bold; font-size: 18px; font-family: 'Playfair Display', serif; }
         .back-btn { background: none; border: none; font-size: 24px; color: var(--text); padding: 0; cursor: pointer; }
 
-        .main-btn { background: var(--brand); color: white; border: none; width: 100%; padding: 16px; border-radius: 14px; font-weight: bold; font-size: 16px; cursor: margin-top: 15px; transition: background 0.2s; box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3); }
+        .main-btn { background: var(--brand); color: white; border: none; width: 100%; padding: 16px; border-radius: 14px; font-weight: bold; font-size: 16px; cursor: pointer; margin-top: 15px; transition: background 0.2s; box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3); }
         .main-btn:disabled { background: var(--gray); cursor: not-allowed; box-shadow: none; }
         .danger-btn { background: var(--red); color: white; border: none; width: 100%; padding: 16px; border-radius: 14px; font-weight: bold; font-size: 16px; cursor: pointer; margin-top: 10px; transition: opacity 0.2s; box-shadow: 0 4px 15px rgba(255, 59, 48, 0.2); }
         .danger-btn:disabled { opacity: 0.5; cursor: not-allowed; }
@@ -304,7 +304,7 @@
         <div id="favorites-list" class="products-grid" style="padding: 15px;"></div>
     </div>
 
-    <div id="order-detail-modal" class="full-modal" style="z-index: 3000;">
+    <div id="order-detail-modal" class="full-modal" style="z-index: 9999;">
         <div class="modal-header">
             <button class="back-btn" onclick="closeModal('order-detail-modal')">←</button>
             <span>Buyurtma tafsiloti</span>
@@ -329,7 +329,7 @@
         </div>
     </div>
 
-    <div id="checkout-modal" class="full-modal" style="background: white; z-index: 3000;">
+    <div id="checkout-modal" class="full-modal" style="background: white;">
         <div class="modal-header">
             <button class="back-btn" onclick="closeModal('checkout-modal')">←</button>
             <span>Buyurtmani rasmiylashtirish</span>
@@ -343,7 +343,7 @@
         </div>
     </div>
 
-    <div id="seller-contact-modal" class="full-modal" style="background: white; z-index: 3000;">
+    <div id="seller-contact-modal" class="full-modal" style="background: white;">
         <div class="modal-header">
             <button class="back-btn" onclick="closeModal('seller-contact-modal')">←</button>
             <span>Sotuvchi bilan bog'lanish</span>
@@ -365,7 +365,7 @@
                         <div class="si-label">Telegram</div>
                         <div class="si-value" id="sc-telegram">—</div>
                     </div>
-                </div>
+                </a>
                 <div class="seller-info-row" id="sc-address-row" style="display:none;">
                     <div class="si-icon">📍</div>
                     <div>
@@ -378,7 +378,7 @@
         </div>
     </div>
 
-    <div id="admin-panel-modal" class="full-modal" style="z-index: 3000; background: var(--bg);">
+    <div id="admin-panel-modal" class="full-modal">
         <div class="modal-header">
             <button class="back-btn" onclick="closeModal('admin-panel-modal')">←</button>
             <span>Boshqaruv Paneli</span>
@@ -559,71 +559,10 @@
 
         const IMGBB_API_KEY = "b2d8a186f54db4ca35a446925ec3ebdf";
 
-        // --- AI ANALIZ FUNKSIYASI ---
-        window.analyzeImageWithAI = async (file) => {
-            const nameInput = document.getElementById('ap-name');
-            const descInput = document.getElementById('ap-desc');
-            
-            if(nameInput) nameInput.value = "AI tahlil qilmoqda (Nomi)...";
-            if(descInput) descInput.value = "AI tahlil qilmoqda (Tavsifi)...";
-
-            const reader = new FileReader();
-            reader.readAsDataURL(file);
-            reader.onload = async function () {
-                const base64Image = reader.result.split(',')[1];
-                const apiKey = "AQ.Ab8RN6KbToB9NrEZ4eJsHGcomqTb-19BDYfFACoIcyu6QRfjgA";
-                const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
-
-                try {
-                    const response = await fetch(url, {
-                        method: "POST",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({
-                            contents: [{
-                                parts: [
-                                    { text: "Ushbu kiyim/buyumni tahlil qilib, savdo do'koni uchun mos va jozibador qisqacha 'Nomi' va 'Tavsifi'ni o'zbek tilida yozib ber. Natijani qat'iy ravishda faqat JSON formatida qaytar: {\"name\": \"Mahsulot nomi\", \"desc\": \"Tavsifi...\"}" },
-                                    { inline_data: { mime_type: file.type || "image/jpeg", data: base64Image } }
-                                ]
-                            }]
-                        })
-                    });
-
-                    const data = await response.json();
-                    
-                    if (data.candidates && data.candidates.length > 0) {
-                        let textResult = data.candidates[0].content.parts[0].text;
-                        textResult = textResult.replace(/```json/g, "").replace(/```/g, "").trim();
-                        
-                        const resultObj = JSON.parse(textResult);
-                        
-                        if(nameInput) nameInput.value = resultObj.name || "";
-                        if(descInput) descInput.value = resultObj.desc || "";
-                        
-                        if (tg && tg.showAlert) {
-                           tg.showAlert("AI tahlili yakunlandi! Endi narx va sonini kiriting.");
-                        } else {
-                           alert("AI tahlili yakunlandi! Endi narx va sonini kiriting.");
-                        }
-                    } else {
-                        throw new Error("AI javob qaytarmadi.");
-                    }
-                } catch (err) {
-                    console.error("AI xatosi:", err);
-                    if(nameInput && nameInput.value.includes("tahlil")) nameInput.value = "";
-                    if(descInput) descInput.value = "Tahlil qilishda xatolik yuz berdi. Iltimos, o'zingiz kiriting.";
-                }
-            };
-        };
-
         // RASMNI 4:3 FORMATGA (OQ FON BILAN) AVTOMATIK MOSLASHTIRISH
         window.handleImageUploadAutoProcess = async (input) => {
             const file = input.files[0];
             if (!file) return;
-
-            // --- AI Analizni shu yerda chaqiramiz ---
-            window.analyzeImageWithAI(file);
-            // ----------------------------------------
-
             const spinner = document.getElementById('upload-spinner');
             const preview = document.getElementById('ap-img-preview');
             const area    = document.getElementById('upload-area');
@@ -1061,7 +1000,7 @@
             let feePercent = Number(o.feePercent || 0);
             let subtotal   = Number(o.subtotal   || 0);
             let feeAmount  = Number(o.feeAmount  || 0);
-            let isAdmin    = admins.some(adminId => String(adminId) === String(userId));
+            let isAdmin    = admins.includes(userId);
             let html = `
                 <div class="p-info-box">
                     <div class="p-row"><b>Buyurtma raqami:</b> <span>#${o.orderNum}</span></div>
@@ -1316,14 +1255,10 @@
             }).join('');
         }
 
-        // ---------- MUHIM QISM SHU YERDA ----------
         function checkAdmin() {
-            // Firebase'dagi ID number bo'lib qolgan bo'lsa ham qat'iy tekshiradi:
-            isAdmin = admins.some(adminId => String(adminId) === String(userId));
+            isAdmin = admins.includes(userId);
             document.getElementById('btn-admin-panel').style.display = isAdmin ? 'block' : 'none';
         }
-        // ------------------------------------------
-
         window.openAdminPanel = () => {
             document.getElementById('admin-panel-modal').style.display = 'block';
             openAdminView('admin-orders');
