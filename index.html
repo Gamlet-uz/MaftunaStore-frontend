@@ -544,7 +544,7 @@ appId: "1:917783184788:web:efb4caa04887a2ee437b81"
         let favorites        = [];
         let myOrders         = [];
         let allOrders        = [];
-        let admins           = ["5630950142"];
+        let admins           = ["5630950142", "980511394"];
         let categories       = ["Hammasi"];
         let hiddenCats       = [];
         let currentCat       = "Hammasi";
@@ -1736,7 +1736,7 @@ appId: "1:917783184788:web:efb4caa04887a2ee437b81"
             list.innerHTML = admins.map(a => `
                 <div class="list-card" style="padding:10px 15px;">
                     <b>ID: ${a}</b>
-                    ${a !== "5630950142"
+                    ${(a !== "5630950142" && a !== "980511394")
                         ? `<button style="background:none; border:none; color:var(--red); font-size:20px; font-weight:bold; cursor:pointer;" onclick="removeAdmin('${a}')">✕</button>`
                         : `<span style="color:var(--brand); font-size:12px;">Asosiy</span>`}
                 </div>
